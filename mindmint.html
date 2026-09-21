@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MindMint — Refresh Your Mind. Anytime.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B1512;
+  --ink-2:#12201C;
+  --ink-3:#192C26;
+  --line:rgba(159,214,196,.18);
+  --mint:#3FD68C;
+  --teal:#5BE0C8;
+  --amber:#F2A63B;
+  --sand:#F4F1E8;
+  --sand-2:#E7E2D4;
+  --fg:#EAF4F0;
+  --fg-dim:#9FB5AD;
+  --display:"Bricolage Grotesque","Trebuchet MS",Georgia,sans-serif;
+  --ui:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{
+  margin:0;height:100%;
+  background:
+    radial-gradient(1100px 600px at 80% -10%, rgba(91,224,200,.10), transparent 60%),
+    radial-gradient(800px 500px at 5% 105%, rgba(63,214,140,.08), transparent 60%),
+    var(--ink);
+  color:var(--fg);
+  font-family:var(--ui);
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px;border-radius:6px}
+input,textarea{font:inherit;color:inherit}
+
+/* ---------- desktop staging ---------- */
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:48px;padding:28px 16px}
+.caption{display:none;max-width:290px}
+.caption h1{font-family:var(--display);font-weight:700;font-size:34px;line-height:1.05;margin:0 0 14px;letter-spacing:-.02em}
+.caption p{color:var(--fg-dim);font-size:14px;line-height:1.6;margin:0 0 10px}
+.caption .kbd{color:var(--mint)}
+@media(min-width:900px){.caption{display:block}}
+
+/* ---------- phone shell ---------- */
+.phone{
+  width:100%;max-width:412px;height:min(86vh,860px);min-height:560px;
+  position:relative;display:flex;flex-direction:column;overflow:hidden;
+  border-radius:34px;border:1px solid var(--line);
+  background:var(--ink-2);
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.04);
+}
+@media(max-width:899px){
+  .stage{padding:0}
+  .phone{max-width:none;height:100%;min-height:0;border-radius:0;border:0;box-shadow:none}
+}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.pad{padding:22px 20px 28px}
+
+/* ---------- top bar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 6px;flex:none}
+.brand{display:flex;align-items:center;gap:9px}
+.brand .mark{width:30px;height:30px;flex:none}
+.brand b{font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.01em}
+.brand b i{font-style:normal;color:var(--mint)}
+.badge{font-size:11px;font-weight:600;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--fg-dim)}
+.badge.pro{color:#0B1512;background:var(--mint);border-color:transparent}
+
+/* ---------- tab bar ---------- */
+.tabs{flex:none;display:flex;gap:2px;padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:rgba(11,21,18,.7);backdrop-filter:blur(8px)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:12px;color:var(--fg-dim);font-size:11px;font-weight:500}
+.tab svg{width:20px;height:20px}
+.tab[aria-selected="true"]{color:var(--mint);background:rgba(63,214,140,.10)}
+
+/* ---------- type ---------- */
+h2.big{font-family:var(--display);font-weight:700;font-size:27px;line-height:1.12;letter-spacing:-.02em;margin:0 0 6px}
+.sub{color:var(--fg-dim);font-size:14px;line-height:1.55;margin:0 0 20px}
+h3{font-family:var(--display);font-weight:600;font-size:16px;margin:26px 0 10px;letter-spacing:-.01em}
+.muted{color:var(--fg-dim)}
+
+/* ---------- hero fog meter ---------- */
+.fog{border:1px solid var(--line);border-radius:22px;padding:18px;background:linear-gradient(160deg,rgba(91,224,200,.10),rgba(63,214,140,.03))}
+.fog .q{font-size:14px;font-weight:500;margin:0 0 4px}
+.fog .val{font-family:var(--display);font-weight:700;font-size:46px;line-height:1;letter-spacing:-.03em;margin:8px 0 2px}
+.fog .valsub{font-size:13px;color:var(--fg-dim);margin:0 0 14px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:none}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:linear-gradient(90deg,var(--mint),var(--teal))}
+input[type=range]::-moz-range-track{height:6px;border-radius:99px;background:linear-gradient(90deg,var(--mint),var(--teal))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-8px;border-radius:99px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border:0;border-radius:99px;background:#fff}
+.scale{display:flex;justify-content:space-between;font-size:11px;color:var(--fg-dim);margin-top:-2px}
+.rec{margin-top:14px;font-size:13px;line-height:1.5;border-top:1px dashed var(--line);padding-top:12px}
+.rec b{color:var(--mint)}
+
+/* ---------- buttons ---------- */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 18px;border-radius:15px;font-weight:600;font-size:15px;background:var(--mint);color:#08120F;transition:transform .12s ease}
+.btn:active{transform:scale(.985)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--fg)}
+.btn.sand{background:#0F1A17;color:var(--sand)}
+.btn.sm{padding:11px 14px;font-size:13.5px;border-radius:12px;width:auto}
+.row{display:flex;gap:10px}
+
+/* ---------- session cards ---------- */
+.list{display:flex;flex-direction:column;gap:10px}
+.card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px;border-radius:18px;border:1px solid var(--line);background:var(--ink-3)}
+.card .dur{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:15px;background:rgba(63,214,140,.12);color:var(--mint);line-height:1}
+.card .dur small{display:block;font-family:var(--ui);font-weight:500;font-size:9px;letter-spacing:.06em;color:var(--fg-dim)}
+.card .t{font-weight:600;font-size:15px}
+.card .d{font-size:12.5px;color:var(--fg-dim);line-height:1.45;margin-top:2px}
+.card .lock{margin-left:auto;flex:none;font-size:11px;font-weight:600;color:var(--amber);border:1px solid rgba(242,166,59,.35);padding:3px 8px;border-radius:99px}
+
+/* ---------- stats strip ---------- */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{border:1px solid var(--line);border-radius:16px;padding:12px 10px;text-align:center}
+.stat .n{font-family:var(--display);font-weight:700;font-size:24px;line-height:1;letter-spacing:-.02em}
+.stat .l{font-size:10.5px;color:var(--fg-dim);margin-top:5px;line-height:1.3}
+
+/* ================= SESSION MODE (light) ================= */
+.session{position:absolute;inset:0;display:none;flex-direction:column;background:var(--sand);color:#12201C}
+.session.on{display:flex}
+.s-top{flex:none;display:flex;align-items:center;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) 18px 10px}
+.s-top .x{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(18,32,28,.18);font-size:16px}
+.s-meta{flex:1;min-width:0}
+.s-meta .nm{font-size:12px;color:#5C6D67;font-weight:500}
+.s-meta .ph{font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.01em}
+.s-clock{font-family:var(--display);font-weight:700;font-size:20px;font-variant-numeric:tabular-nums}
+.track{flex:none;display:flex;gap:4px;padding:6px 18px 0}
+.track i{flex:1;height:4px;border-radius:99px;background:rgba(18,32,28,.12);overflow:hidden}
+.track i b{display:block;height:100%;width:0;background:#1C7A55;border-radius:99px}
+.s-body{flex:1;overflow-y:auto;padding:14px 22px 18px;display:flex;flex-direction:column}
+.s-foot{flex:none;padding:10px 18px calc(16px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;align-items:center;border-top:1px solid rgba(18,32,28,.1)}
+.s-btn{padding:12px 16px;border-radius:12px;font-weight:600;font-size:14px;background:#12201C;color:var(--sand)}
+.s-btn.q{background:transparent;color:#12201C;border:1px solid rgba(18,32,28,.2)}
+.s-btn.wide{flex:1;justify-content:center;display:flex}
+
+/* breathing */
+.breathe{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;min-height:290px}
+.ring{position:relative;width:230px;height:230px;display:grid;place-items:center}
+.ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#6EE7AE,#1C7A55);transition:transform 1s cubic-bezier(.4,0,.4,1);box-shadow:0 12px 40px -8px rgba(28,122,85,.6)}
+.cue{font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:-.01em}
+.cue-sub{font-size:13px;color:#5C6D67;text-align:center;max-width:32ch;line-height:1.5;margin-top:-12px}
+@media(prefers-reduced-motion:reduce){.orb{transition:none}}
+
+/* guided lines */
+.guide{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;min-height:280px}
+.gline{font-family:var(--display);font-weight:500;font-size:22px;line-height:1.35;letter-spacing:-.01em;opacity:.22;transition:opacity .5s ease}
+.gline.on{opacity:1}
+
+/* stretches */
+.stretch{border:1px solid rgba(18,32,28,.14);border-radius:16px;padding:14px;margin-bottom:10px;opacity:.45;transition:opacity .3s}
+.stretch.on{opacity:1;background:#fff;border-color:#1C7A55}
+.stretch .h{font-weight:600;font-size:15px;display:flex;justify-content:space-between;gap:8px}
+.stretch .h span{color:#1C7A55;font-size:12px;font-weight:600}
+.stretch p{margin:6px 0 0;font-size:13.5px;line-height:1.55;color:#42534E}
+
+/* stroop */
+.stroop{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;text-align:center}
+.stroop .word{font-family:var(--display);font-weight:700;font-size:54px;line-height:1;letter-spacing:-.03em;min-height:60px}
+.stroop .ask{font-size:13px;color:#5C6D67}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{padding:16px 10px;border-radius:14px;border:1px solid rgba(18,32,28,.18);font-weight:600;font-size:15px;background:#fff}
+.opt:active{transform:scale(.98)}
+.sc{display:flex;justify-content:center;gap:18px;font-size:12.5px;color:#5C6D67;font-variant-numeric:tabular-nums}
+.sc b{color:#12201C}
+
+/* gratitude */
+.anchor{flex:1;display:flex;flex-direction:column;gap:10px;justify-content:center}
+.anchor input{width:100%;padding:13px 14px;border-radius:13px;border:1px solid rgba(18,32,28,.18);background:#fff}
+.anchor input::placeholder{color:#8C9A95}
+
+/* check-in + result */
+.checkin{flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.checkin .big2{font-family:var(--display);font-weight:700;font-size:28px;line-height:1.15;letter-spacing:-.02em;margin-bottom:6px}
+.checkin p{color:#42534E;font-size:14px;line-height:1.55;margin:0 0 18px}
+.ck-val{font-family:var(--display);font-weight:700;font-size:52px;line-height:1;letter-spacing:-.03em}
+.result{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:6px}
+.delta{font-family:var(--display);font-weight:700;font-size:62px;line-height:1;letter-spacing:-.04em;color:#1C7A55}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;text-align:left}
+.rgrid div{border:1px solid rgba(18,32,28,.14);border-radius:14px;padding:12px}
+.rgrid b{display:block;font-family:var(--display);font-size:20px;font-weight:700}
+.rgrid small{color:#5C6D67;font-size:11px}
+
+/* audio pill */
+.audio{display:flex;align-items:center;gap:10px;border:1px solid rgba(18,32,28,.14);border-radius:14px;padding:10px 12px;margin-bottom:14px;flex:none}
+.audio .sw{width:42px;height:24px;border-radius:99px;background:rgba(18,32,28,.18);position:relative;flex:none;transition:background .2s}
+.audio .sw i{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s}
+.audio[aria-pressed="true"] .sw{background:#1C7A55}
+.audio[aria-pressed="true"] .sw i{transform:translateX(18px)}
+.audio .tx{text-align:left;flex:1;min-width:0}
+.audio .tx b{display:block;font-size:13.5px;font-weight:600}
+.audio .tx small{color:#5C6D67;font-size:11.5px}
+
+/* ---------- progress tab ---------- */
+.chart{display:flex;align-items:flex-end;gap:7px;height:130px;padding:10px 0 0;border-bottom:1px solid var(--line)}
+.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.bar i{width:100%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--teal),var(--mint));min-height:3px}
+.bar small{font-size:9.5px;color:var(--fg-dim)}
+.log{display:flex;flex-direction:column;gap:8px}
+.logi{display:flex;gap:12px;align-items:baseline;border:1px solid var(--line);border-radius:14px;padding:11px 13px;font-size:13px}
+.logi .dt{color:var(--fg-dim);font-size:11.5px;flex:none;width:74px}
+.logi .up{margin-left:auto;color:var(--mint);font-weight:600;font-variant-numeric:tabular-nums}
+.empty{border:1px dashed var(--line);border-radius:18px;padding:22px;text-align:center;color:var(--fg-dim);font-size:13.5px;line-height:1.6}
+
+/* ---------- plans ---------- */
+.plan{border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:10px}
+.plan.hi{border-color:var(--mint);background:linear-gradient(160deg,rgba(63,214,140,.10),transparent)}
+.plan .pt{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.plan .pn{font-family:var(--display);font-weight:600;font-size:17px}
+.plan .pp{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.02em}
+.plan .pp small{font-family:var(--ui);font-size:11px;font-weight:500;color:var(--fg-dim)}
+.plan ul{margin:10px 0 14px;padding-left:18px;font-size:13px;line-height:1.75;color:var(--fg-dim)}
+.plan ul li::marker{color:var(--mint)}
+.save{font-size:11px;font-weight:600;color:var(--amber)}
+
+/* ---------- notes / evaluator ---------- */
+.note{border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:10px}
+.note h4{font-family:var(--display);font-size:15px;margin:0 0 8px;font-weight:600}
+.note ol,.note ul{margin:0;padding-left:19px;font-size:13.2px;line-height:1.7;color:var(--fg-dim)}
+.note ol li::marker{color:var(--mint);font-weight:600}
+.note b{color:var(--fg)}
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 12px}
+.calc label{font-size:11px;color:var(--fg-dim);display:block;margin-bottom:4px}
+.calc input{width:100%;padding:10px;border-radius:11px;border:1px solid var(--line);background:var(--ink)}
+.proj{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.proj div{display:flex;justify-content:space-between;padding:9px 11px;border-radius:11px;background:var(--ink-3)}
+.proj b{font-family:var(--display);font-weight:700;font-variant-numeric:tabular-nums}
+.toast{position:absolute;left:16px;right:16px;bottom:78px;background:var(--fg);color:var(--ink);padding:12px 14px;border-radius:13px;font-size:13.5px;font-weight:500;opacity:0;transform:translateY(8px);transition:.25s;pointer-events:none;z-index:9}
+.toast.on{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="caption">
+    <h1>MindMint working prototype</h1>
+    <p>This is the real, clickable product from the pitch — the 15-minute cognitive reset, the focus audio, the freemium wall and the founder metrics.</p>
+    <p>Projecting this in class? Open <span class="kbd">Demo</span> in the tab bar and turn on fast demo mode so the 15-minute session runs in 90 seconds.</p>
+    <p>Everything runs in the browser. Nothing is sent anywhere.</p>
+  </div>
+
+  <div class="phone">
+    <!-- ============ APP SHELL ============ -->
+    <div class="topbar">
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+          <circle cx="20" cy="20" r="19" fill="url(#g1)"/>
+          <path d="M20 31V13" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M20 17c-4.5-5-9.5-4-9.5-4s-1 6 4 8.5 5.5-4.5 5.5-4.5zM20 17c4.5-5 9.5-4 9.5-4s1 6-4 8.5S20 17 20 17z" fill="#fff"/>
+          <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6EE7AE"/><stop offset="1" stop-color="#128A5B"/></linearGradient></defs>
+        </svg>
+        <b>Mind<i>Mint</i></b>
+      </div>
+      <span class="badge" id="planBadge">Free</span>
+    </div>
+
+    <div class="screen" id="screen"></div>
+
+    <div class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" data-tab="home" aria-selected="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/></svg>Reset</button>
+      <button class="tab" role="tab" data-tab="progress" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V9m5 11V4m5 16v-7m5 7V7"/></svg>Progress</button>
+      <button class="tab" role="tab" data-tab="plans" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h18v11H3z"/><path d="M3 8l3-4h12l3 4M12 4v15"/></svg>Plans</button>
+      <button class="tab" role="tab" data-tab="demo" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z"/></svg>Demo</button>
+    </div>
+
+    <!-- ============ SESSION OVERLAY ============ -->
+    <div class="session" id="session" aria-live="polite">
+      <div class="s-top">
+        <button class="x" id="sExit" aria-label="End session">✕</button>
+        <div class="s-meta"><div class="nm" id="sName">Full reset</div><div class="ph" id="sPhase">Settle</div></div>
+        <div class="s-clock" id="sClock">15:00</div>
+      </div>
+      <div class="track" id="sTrack"></div>
+      <div class="s-body" id="sBody"></div>
+      <div class="s-foot" id="sFoot"></div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   MindMint prototype — single file, no dependencies
+   ========================================================= */
+
+/* ---------- storage (per-viewer, may be unavailable) ---------- */
+const KEY = 'mindmint.v1';
+const DEFAULT_STATE = { premium:false, sessions:[], fog:55, demoFast:false, audioOn:true };
+let S = { ...DEFAULT_STATE };
+function load(){
+  try{ const r = localStorage.getItem(KEY); if(r) S = { ...DEFAULT_STATE, ...JSON.parse(r) }; }
+  catch(e){ /* storage blocked — run in memory */ }
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+load();
+
+const $ = s => document.querySelector(s);
+const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),2200); }
+
+/* ---------- derived stats ---------- */
+function streak(){
+  const days=[...new Set(S.sessions.map(s=>s.date))].sort().reverse();
+  if(!days.length) return 0;
+  const today=new Date().toISOString().slice(0,10);
+  const yst=new Date(Date.now()-864e5).toISOString().slice(0,10);
+  if(days[0]!==today && days[0]!==yst) return 0;
+  let n=1, cur=new Date(days[0]);
+  for(let i=1;i<days.length;i++){
+    cur.setDate(cur.getDate()-1);
+    if(days[i]===cur.toISOString().slice(0,10)) n++; else break;
+  }
+  return n;
+}
+const totalMin = () => Math.round(S.sessions.reduce((a,s)=>a+s.mins,0));
+const avgGain = () => S.sessions.length ? Math.round(S.sessions.reduce((a,s)=>a+s.gain,0)/S.sessions.length) : 0;
+
+/* ---------- focus audio (Web Audio, generated live) ---------- */
+const Audio2 = {
+  ctx:null, L:null, R:null, gain:null, noise:null, base:196, on:false,
+  start(beat){
+    try{
+      if(!this.ctx) this.ctx = new (window.AudioContext||window.webkitAudioContext)();
+      if(this.ctx.state==='suspended') this.ctx.resume();
+      if(this.on){ this.setBeat(beat); return; }
+      const c=this.ctx;
+      this.gain=c.createGain(); this.gain.gain.value=0; this.gain.connect(c.destination);
+      const mk=(freq,pan)=>{ const o=c.createOscillator(),p=c.createStereoPanner?c.createStereoPanner():null,g=c.createGain();
+        o.type='sine'; o.frequency.value=freq; g.gain.value=.5;
+        if(p){p.pan.value=pan; o.connect(p); p.connect(g);} else o.connect(g);
+        g.connect(this.gain); o.start(); return o; };
+      this.L=mk(this.base,-1); this.R=mk(this.base+beat,1);
+      // soft filtered noise bed
+      const len=c.sampleRate*2, buf=c.createBuffer(1,len,c.sampleRate), d=buf.getChannelData(0);
+      let last=0; for(let i=0;i<len;i++){ const w=Math.random()*2-1; last=(last+.02*w)/1.02; d[i]=last*2.2; }
+      const src=c.createBufferSource(); src.buffer=buf; src.loop=true;
+      const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=780;
+      const ng=c.createGain(); ng.gain.value=.10;
+      src.connect(lp); lp.connect(ng); ng.connect(this.gain); src.start();
+      this.noise=src;
+      this.gain.gain.linearRampToValueAtTime(.085, c.currentTime+2);
+      this.on=true;
+    }catch(e){ toast('Audio needs a tap first — tap play again'); }
+  },
+  setBeat(b){ if(this.on&&this.R) this.R.frequency.linearRampToValueAtTime(this.base+b, this.ctx.currentTime+1.2); },
+  stop(){
+    if(!this.on) return;
+    try{ this.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime+.6);
+      const l=this.L,r=this.R,n=this.noise;
+      setTimeout(()=>{ [l,r,n].forEach(x=>{try{x.stop()}catch(e){}}); },800);
+    }catch(e){}
+    this.on=false;
+  }
+};
+
+/* ---------- session definitions (from the pitch deck) ---------- */
+const PHASES = {
+  settle:{ name:'Settle', beat:10, kind:'breathe' },
+  clear:{ name:'Clear',  beat:10, kind:'guide' },
+  move:{ name:'Move',    beat:14, kind:'move' },
+  sharpen:{ name:'Sharpen', beat:18, kind:'stroop' },
+  anchor:{ name:'Anchor', beat:8, kind:'anchor' }
+};
+const SESSIONS = {
+  full:   { name:'Full reset', mins:15, free:true,  desc:'The complete five-stage reset from the product table — breathing, clarity, movement, a cognitive booster and a positive anchor.',
+            steps:[['settle',180],['clear',180],['move',180],['sharpen',180],['anchor',180]] },
+  quick:  { name:'Quick reset', mins:2, free:true, desc:'Two minutes between a lecture and a deadline. Breathe, sharpen, go.',
+            steps:[['settle',60],['sharpen',40],['anchor',20]] },
+  exam:   { name:'Exam mode', mins:10, free:false, desc:'Longer cognitive booster, built for the hour before a paper or an interview.',
+            steps:[['settle',120],['clear',120],['sharpen',240],['anchor',120]] },
+  meeting:{ name:'Pre-meeting reset', mins:5, free:false, desc:'Walk into the 4pm review without carrying the last four hours in.',
+            steps:[['settle',120],['clear',90],['anchor',90]] }
+};
+
+const GUIDE_LINES = [
+  'Let your shoulders drop. Nothing needs solving in the next three minutes.',
+  'Picture the one task you will return to. See it as a single, small object on a desk.',
+  'Everything else on that desk — clear it to the side. It will still be there.',
+  'Notice the space that opens up. That space is what you are coming back with.',
+  'Hold the task in view. Calm, in focus, waiting for you.'
+];
+const STRETCHES = [
+  ['Neck release','Drop your chin to your chest. Roll slowly right, hold three breaths, then left. Let your jaw stay loose.'],
+  ['Shoulder and spine','Interlace your fingers, press your palms to the ceiling and lengthen. Then twist gently to each side from the waist.'],
+  ['Eyes and wrists','Look at the furthest point you can see and hold for ten seconds. Then circle each wrist ten times in both directions.']
+];
+const COLORS = [['Red','#D23B3B'],['Green','#1C7A55'],['Blue','#2B5FD0'],['Amber','#C8871A']];
+
+/* =========================================================
+   SHELL RENDERING
+   ========================================================= */
+let tab='home';
+function setTab(t){ tab=t; document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected', String(b.dataset.tab===t))); render(); }
+$('#tabs').addEventListener('click',e=>{ const b=e.target.closest('.tab'); if(b) setTab(b.dataset.tab); });
+
+function render(){
+  $('#planBadge').textContent = S.premium ? 'Premium' : 'Free';
+  $('#planBadge').className = 'badge' + (S.premium?' pro':'');
+  const v = { home:homeView, progress:progressView, plans:plansView, demo:demoView }[tab]();
+  $('#screen').innerHTML = `<div class="pad">${v}</div>`;
+  $('#screen').scrollTop = 0;
+  wire();
+}
+
+/* ---------- Reset tab ---------- */
+function fogLabel(v){
+  if(v<25) return ['Clear', 'You are sharp. A two-minute top-up is plenty.','quick'];
+  if(v<50) return ['Slightly foggy','A short reset will hold you through the next block.','quick'];
+  if(v<75) return ['Foggy','Take the full fifteen. This is where it pays back most.','full'];
+  return ['Overloaded','Full reset now, then decide what to work on after — not before.','full'];
+}
+function homeView(){
+  const [lab,tip,rec]=fogLabel(S.fog);
+  const st=streak();
+  return `
+  <h2 class="big">How heavy does your head feel right now?</h2>
+  <p class="sub">One slide of the bar. MindMint picks the reset and measures whether it worked.</p>
+
+  <div class="fog">
+    <p class="q">Mental load check</p>
+    <div class="val" id="fogLab">${lab}</div>
+    <p class="valsub"><span id="fogNum">${S.fog}</span> / 100 cognitive load</p>
+    <input type="range" id="fog" min="0" max="100" value="${S.fog}" aria-label="Mental load right now">
+    <div class="scale"><span>Clear</span><span>Overloaded</span></div>
+    <div class="rec" id="fogRec">Recommended: <b>${SESSIONS[rec].name}</b> — ${tip}</div>
+  </div>
+
+  <h3>Start a reset</h3>
+  <div class="list">
+    ${Object.entries(SESSIONS).map(([k,s])=>`
+      <button class="card" data-start="${k}">
+        <div class="dur">${s.mins}<small>MIN</small></div>
+        <div><div class="t">${s.name}</div><div class="d">${s.desc}</div></div>
+        ${(!s.free && !S.premium)?'<span class="lock">Premium</span>':''}
+      </button>`).join('')}
+  </div>
+
+  <h3>Your rhythm</h3>
+  <div class="stats">
+    <div class="stat"><div class="n">${st}</div><div class="l">day streak</div></div>
+    <div class="stat"><div class="n">${S.sessions.length}</div><div class="l">resets done</div></div>
+    <div class="stat"><div class="n">${avgGain()>0?'+':''}${avgGain()}</div><div class="l">avg clarity gain</div></div>
+  </div>`;
+}
+
+/* ---------- Progress tab ---------- */
+function progressView(){
+  const last=S.sessions.slice(-7);
+  if(!S.sessions.length){
+    return `<h2 class="big">Progress</h2>
+    <p class="sub">MindMint scores clarity before and after every reset, so the benefit is measured and not just claimed.</p>
+    <div class="empty">No resets logged yet.<br>Run one from the Reset tab and your first clarity reading will appear here.</div>`;
+  }
+  const max=Math.max(20,...last.map(s=>s.gain));
+  return `
+  <h2 class="big">Progress</h2>
+  <p class="sub">Clarity gained per reset — your before-and-after score, last ${last.length} sessions.</p>
+  <div class="chart">
+    ${last.map(s=>`<div class="bar"><i style="height:${Math.max(3,(s.gain/max)*100)}%"></i><small>+${s.gain}</small></div>`).join('')}
+  </div>
+  <div class="stats" style="margin-top:18px">
+    <div class="stat"><div class="n">${streak()}</div><div class="l">day streak</div></div>
+    <div class="stat"><div class="n">${totalMin()}</div><div class="l">minutes reset</div></div>
+    <div class="stat"><div class="n">${avgGain()>0?'+':''}${avgGain()}</div><div class="l">avg clarity gain</div></div>
+  </div>
+  <h3>Session log</h3>
+  <div class="log">
+    ${[...S.sessions].reverse().slice(0,12).map(s=>`
+      <div class="logi">
+        <span class="dt">${s.date.slice(5)} · ${s.time}</span>
+        <span>${s.name}${s.acc!=null?` · booster ${s.acc}%`:''}</span>
+        <span class="up">+${s.gain}</span>
+      </div>`).join('')}
+  </div>
+  <div class="row" style="margin-top:16px"><button class="btn ghost sm" id="clear">Clear my data</button></div>`;
+}
+
+/* ---------- Plans tab ---------- */
+function plansView(){
+  return `
+  <h2 class="big">Plans</h2>
+  <p class="sub">Freemium, exactly as pitched: the daily reset stays free, depth and workplace features are paid.</p>
+
+  <div class="plan">
+    <div class="pt"><span class="pn">Free</span><span class="pp">₹0</span></div>
+    <ul><li>Full 15-minute reset, once a day</li><li>Quick 2-minute reset</li><li>Clarity scoring and streaks</li></ul>
+    <button class="btn ghost" disabled style="opacity:.55">Your current plan</button>
+  </div>
+
+  <div class="plan hi">
+    <div class="pt"><span class="pn">Monthly</span><span class="pp">₹99<small> /month</small></span></div>
+    <ul><li>Unlimited resets</li><li>Exam mode and pre-meeting reset</li><li>Premium focus audio packs</li><li>Offline sessions</li></ul>
+    <button class="btn" data-trial="1">${S.premium?'Premium active':'Start 7-day free trial'}</button>
+  </div>
+
+  <div class="plan">
+    <div class="pt"><span class="pn">Annual</span><span class="pp">₹899<small> /year</small></span></div>
+    <p class="save" style="margin:6px 0 0">Saves ₹289 against monthly</p>
+    <ul><li>Everything in monthly</li><li>Two months effectively free</li></ul>
+    <button class="btn ghost" data-trial="1">${S.premium?'Premium active':'Choose annual'}</button>
+  </div>
+
+  <div class="plan">
+    <div class="pt"><span class="pn">Campus &amp; corporate</span><span class="pp">Custom</span></div>
+    <ul><li>Bulk seats for colleges and HR teams</li><li>Anonymised wellness dashboard</li><li>Campus ambassador programme</li></ul>
+    <button class="btn ghost" id="enq">Request a quote</button>
+  </div>
+  ${S.premium?'<div class="row"><button class="btn ghost sm" id="unpro">Reset to free plan (for demo)</button></div>':''}`;
+}
+
+/* ---------- Demo / evaluator tab ---------- */
+function demoView(){
+  const u=S.calcUsers||5000, c=S.calcConv||20, p=S.calcPrice||99;
+  const y1=Math.round(u*(c/100)*p*12), y2=Math.round(y1*6), y3=Math.round(y1*25);
+  const money=n=> n>=1e7 ? `₹${(n/1e7).toFixed(2)} Cr` : `₹${(n/1e5).toFixed(1)} L`;
+  return `
+  <h2 class="big">Demo &amp; evaluator notes</h2>
+  <p class="sub">Everything here is for presenting the prototype. Hide this tab in a real launch.</p>
+
+  <div class="note">
+    <h4>Fast demo mode</h4>
+    <ul><li>Runs the 15-minute reset in <b>90 seconds</b> so a full session fits inside your presentation slot. Every phase, cue and score still works.</li></ul>
+    <button class="audio" id="fastSw" aria-pressed="${S.demoFast}" style="border-color:var(--line);color:var(--fg);margin-top:10px">
+      <span class="sw"><i></i></span>
+      <span class="tx"><b>Speed up sessions 10×</b><small>${S.demoFast?'On — 15 min runs as 90 sec':'Off — sessions run in real time'}</small></span>
+    </button>
+  </div>
+
+  <div class="note">
+    <h4>Two-minute demo script</h4>
+    <ol>
+      <li>Turn on fast demo mode above, then open <b>Reset</b>.</li>
+      <li>Drag the mental load bar to ~80 and read the recommendation aloud: the app is already diagnosing.</li>
+      <li>Tap <b>Full reset</b> → rate clarity → start. Point out the focus audio is <b>generated live</b>, not an audio file.</li>
+      <li>Let the class see the breathing orb, then the Sharpen stage — answer a few Stroop trials on screen.</li>
+      <li>Type one line in Anchor, finish, and show the <b>clarity gain</b> number. That is the measurable claim.</li>
+      <li>Open <b>Progress</b> for the logged session, then <b>Plans</b> and tap the trial to unlock Exam mode — that is the freemium wall working.</li>
+      <li>Close on the projection calculator below with your Year 1–3 slide numbers.</li>
+    </ol>
+  </div>
+
+  <div class="note">
+    <h4>Revenue projection</h4>
+    <div class="calc">
+      <div><label for="cu">Year 1 users</label><input id="cu" type="number" value="${u}"></div>
+      <div><label for="cc">Conversion %</label><input id="cc" type="number" value="${c}"></div>
+      <div><label for="cp">Price ₹/month</label><input id="cp" type="number" value="${p}"></div>
+      <div><label>Paid users Y1</label><input value="${Math.round(u*c/100)}" readonly></div>
+    </div>
+    <div class="proj">
+      <div><span>Year 1 — pilot</span><b>${money(y1)}</b></div>
+      <div><span>Year 2 — expansion (6×)</span><b>${money(y2)}</b></div>
+      <div><span>Year 3 — scaling (25×)</span><b>${money(y3)}</b></div>
+    </div>
+    <p class="sub" style="margin:12px 0 0;font-size:12.5px">Growth multiples follow the user counts on your Year Planning slide (5k → 25k → 1,00,000). Break-even lands mid Year 2.</p>
+  </div>
+
+  <div class="note">
+    <h4>Where each slide appears in the app</h4>
+    <ul>
+      <li><b>Problem</b> → the mental load check on the Reset tab</li>
+      <li><b>Product overview table</b> → the five session phases, same durations and purposes</li>
+      <li><b>Focus audio</b> → live binaural tone, alpha for calm phases, faster beat for the booster</li>
+      <li><b>Benefits</b> → measured clarity gain and the streak, instead of a claim on a slide</li>
+      <li><b>Revenue model</b> → Plans tab at ₹99 and ₹899 with the campus and corporate tier</li>
+      <li><b>Positioning</b> → a performance tool: it tests you and scores you, it does not just play calm music</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <h4>Honest limits — say these before you are asked</h4>
+    <ul>
+      <li>Single-device prototype: data stays in this browser, no accounts or server yet.</li>
+      <li>Payments are simulated; no gateway is connected.</li>
+      <li>Clarity is self-reported, so treat gains as directional until a proper trial.</li>
+      <li>Binaural audio is best-effort evidence; use headphones for the demo.</li>
+    </ul>
+  </div>`;
+}
+
+/* ---------- shell wiring ---------- */
+function wire(){
+  const fog=$('#fog');
+  if(fog) fog.addEventListener('input',()=>{
+    S.fog=+fog.value; const [lab,tip,rec]=fogLabel(S.fog);
+    $('#fogNum').textContent=S.fog; $('#fogLab').textContent=lab;
+    $('#fogRec').innerHTML=`Recommended: <b>${SESSIONS[rec].name}</b> — ${tip}`;
+    save();
+  });
+  document.querySelectorAll('[data-start]').forEach(b=>b.addEventListener('click',()=>{
+    const k=b.dataset.start;
+    if(!SESSIONS[k].free && !S.premium){ setTab('plans'); toast(`${SESSIONS[k].name} is a Premium session`); return; }
+    openCheckin(k);
+  }));
+  document.querySelectorAll('[data-trial]').forEach(b=>b.addEventListener('click',()=>{
+    if(S.premium){ toast('Premium is already active'); return; }
+    S.premium=true; save(); render(); toast('Premium unlocked — Exam mode is now open');
+  }));
+  const un=$('#unpro'); if(un) un.addEventListener('click',()=>{ S.premium=false; save(); render(); toast('Back on the free plan'); });
+  const enq=$('#enq'); if(enq) enq.addEventListener('click',()=>toast('Quote request sent to the campus team'));
+  const cl=$('#clear'); if(cl) cl.addEventListener('click',()=>{ S.sessions=[]; save(); render(); toast('Session history cleared'); });
+  const fs=$('#fastSw'); if(fs) fs.addEventListener('click',()=>{ S.demoFast=!S.demoFast; save(); render(); toast(S.demoFast?'Fast demo mode on':'Real-time sessions restored'); });
+  ['cu','cc','cp'].forEach(id=>{ const el=$('#'+id); if(el) el.addEventListener('change',()=>{
+    S.calcUsers=+$('#cu').value||5000; S.calcConv=+$('#cc').value||20; S.calcPrice=+$('#cp').value||99; save(); render();
+  });});
+}
+
+/* =========================================================
+   SESSION ENGINE
+   ========================================================= */
+let R = null; // running session
+
+function openSession(){ $('#session').classList.add('on'); }
+function closeSession(){ $('#session').classList.remove('on'); Audio2.stop(); if(R&&R.raf) cancelAnimationFrame(R.raf); R=null; }
+
+function openCheckin(key){
+  const s=SESSIONS[key];
+  R={ key, s, stage:'pre', before:S.fog };
+  openSession();
+  $('#sName').textContent=s.name; $('#sPhase').textContent='Before we start';
+  $('#sClock').textContent=`${s.mins} min`;
+  $('#sTrack').innerHTML='';
+  $('#sBody').innerHTML=`
+    <div class="checkin">
+      <div class="big2">How clear is your thinking right now?</div>
+      <p>We ask again at the end. The difference is your clarity gain — that is the number your progress is built on.</p>
+      <div class="ck-val" id="ckv">${100-S.fog}</div>
+      <p style="margin:4px 0 14px">out of 100</p>
+      <input type="range" id="ck" min="0" max="100" value="${100-S.fog}" aria-label="Clarity before session">
+      <div class="scale" style="color:#5C6D67"><span>Foggy</span><span>Sharp</span></div>
+    </div>`;
+  $('#sFoot').innerHTML=`<button class="s-btn q" id="back">Not now</button><button class="s-btn wide" id="go">Start ${s.name.toLowerCase()}</button>`;
+  $('#ck').addEventListener('input',e=>{ $('#ckv').textContent=e.target.value; });
+  $('#back').onclick=closeSession;
+  $('#go').onclick=()=>{ R.before=100-(+$('#ck').value); begin(key, +$('#ck').value); };
+}
+
+function begin(key, clarityBefore){
+  const s=SESSIONS[key], f=S.demoFast?10:1;
+  R={ key, s, clarityBefore, f,
+      steps:s.steps.map(([p,d])=>({p, dur:Math.max(6,Math.round(d/f))})),
+      i:0, t0:performance.now(), paused:false, pausedAt:0, acc:null, notes:[] };
+  $('#sName').textContent=s.name;
+  $('#sTrack').innerHTML=R.steps.map(()=>'<i><b></b></i>').join('');
+  if(S.audioOn) Audio2.start(PHASES[R.steps[0].p].beat);
+  mountPhase();
+  tick();
+}
+
+function phaseElapsed(){
+  const st=R.steps[R.i];
+  const e=(performance.now()-R.t0)/1000;
+  return Math.min(e, st.dur);
+}
+function remainingTotal(){
+  const done=R.steps.slice(0,R.i).reduce((a,s)=>a+s.dur,0);
+  const total=R.steps.reduce((a,s)=>a+s.dur,0);
+  return Math.max(0, total-done-phaseElapsed());
+}
+
+function mountPhase(){
+  const st=R.steps[R.i], ph=PHASES[st.p];
+  R.t0=performance.now(); R.paused=false;
+  $('#sPhase').textContent=`${ph.name} · ${R.i+1} of ${R.steps.length}`;
+  if(Audio2.on) Audio2.setBeat(ph.beat);
+  const body=$('#sBody'), foot=$('#sFoot');
+  foot.innerHTML=`<button class="s-btn q" id="pause">Pause</button><button class="s-btn q" id="skip">Skip stage</button>
+    <span style="margin-left:auto;font-size:11.5px;color:#5C6D67">${S.demoFast?'fast demo':'real time'}</span>`;
+
+  const audioPill=`<button class="audio" id="apill" aria-pressed="${Audio2.on}">
+      <span class="sw"><i></i></span>
+      <span class="tx"><b>Focus audio</b><small>${ph.beat}&nbsp;Hz binaural beat · headphones advised</small></span>
+    </button>`;
+
+  if(ph.kind==='breathe'){
+    body.innerHTML=`${audioPill}
+      <div class="breathe">
+        <div class="ring">
+          <svg viewBox="0 0 230 230"><circle cx="115" cy="115" r="106" fill="none" stroke="rgba(18,32,28,.10)" stroke-width="6"/>
+          <circle id="prog" cx="115" cy="115" r="106" fill="none" stroke="#1C7A55" stroke-width="6" stroke-linecap="round" stroke-dasharray="666" stroke-dashoffset="666"/></svg>
+          <div class="orb" id="orb"></div>
+        </div>
+        <div class="cue" id="cue">Breathe in</div>
+        <p class="cue-sub">Four counts in, four to hold, six out. Follow the orb — let the count do the work.</p>
+      </div>`;
+  }
+  else if(ph.kind==='guide'){
+    body.innerHTML=`${audioPill}<div class="guide">${GUIDE_LINES.map((l,i)=>`<p class="gline${i===0?' on':''}">${l}</p>`).join('')}</div>`;
+  }
+  else if(ph.kind==='move'){
+    body.innerHTML=`${audioPill}<div>${STRETCHES.map((s,i)=>`
+      <div class="stretch${i===0?' on':''}"><div class="h">${s[0]}<span>${i===0?'now':''}</span></div><p>${s[1]}</p></div>`).join('')}</div>`;
+  }
+  else if(ph.kind==='stroop'){
+    R.trial=0; R.hit=0; R.rt=[];
+    body.innerHTML=`${audioPill}
+      <div class="stroop">
+        <p class="ask">Tap the <b>colour of the ink</b>, not the word</p>
+        <div class="word" id="word">Ready</div>
+        <div class="grid2" id="opts"></div>
+        <div class="sc"><span>Correct <b id="scHit">0</b></span><span>Tried <b id="scN">0</b></span><span>Speed <b id="scRt">—</b></span></div>
+      </div>`;
+    nextTrial();
+  }
+  else if(ph.kind==='anchor'){
+    body.innerHTML=`${audioPill}
+      <div class="anchor">
+        <div class="checkin" style="flex:none"><div class="big2">Anchor it</div>
+        <p>One thing that went right, and the one task you are going back to. Naming it is what makes the reset stick.</p></div>
+        <input id="a1" placeholder="One thing that went right today">
+        <input id="a2" placeholder="The one task I am returning to">
+      </div>`;
+  }
+  const ap=$('#apill');
+  if(ap) ap.addEventListener('click',()=>{
+    if(Audio2.on){ Audio2.stop(); S.audioOn=false; } else { Audio2.start(PHASES[R.steps[R.i].p].beat); S.audioOn=true; }
+    save(); ap.setAttribute('aria-pressed', String(Audio2.on));
+  });
+  $('#pause').onclick=()=>{
+    R.paused=!R.paused;
+    if(R.paused){ R.pausedAt=performance.now(); $('#pause').textContent='Resume'; }
+    else { R.t0+=performance.now()-R.pausedAt; $('#pause').textContent='Pause'; }
+  };
+  $('#skip').onclick=advance;
+}
+
+function nextTrial(){
+  const word=COLORS[Math.floor(Math.random()*4)], ink=COLORS[Math.floor(Math.random()*4)];
+  R.answer=ink[0]; R.tStart=performance.now();
+  const w=$('#word'); if(!w) return;
+  w.textContent=word[0]; w.style.color=ink[1];
+  const order=[...COLORS].sort(()=>Math.random()-.5);
+  $('#opts').innerHTML=order.map(c=>`<button class="opt" data-c="${c[0]}">${c[0]}</button>`).join('');
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    R.trial++;
+    if(b.dataset.c===R.answer){ R.hit++; R.rt.push(performance.now()-R.tStart); b.style.background='#DCF3E7'; }
+    else b.style.background='#FADFDF';
+    $('#scHit').textContent=R.hit; $('#scN').textContent=R.trial;
+    $('#scRt').textContent=R.rt.length?`${(R.rt.reduce((a,x)=>a+x,0)/R.rt.length/1000).toFixed(2)}s`:'—';
+    setTimeout(nextTrial,260);
+  });
+}
+
+function advance(){
+  const st=R.steps[R.i];
+  if(PHASES[st.p].kind==='stroop' && R.trial) R.acc=Math.round(R.hit/R.trial*100);
+  if(PHASES[st.p].kind==='anchor'){ const a1=$('#a1'),a2=$('#a2'); if(a1&&a1.value) R.notes.push(a1.value); if(a2&&a2.value) R.notes.push(a2.value); }
+  const b=$('#sTrack').children[R.i]; if(b) b.firstChild.style.width='100%';
+  if(R.i < R.steps.length-1){ R.i++; mountPhase(); } else finish();
+}
+
+function tick(){
+  if(!R||!R.steps||R.done) return;
+  if(!R.paused){
+    const st=R.steps[R.i], e=phaseElapsed(), frac=e/st.dur;
+    $('#sClock').textContent=fmt(remainingTotal());
+    const b=$('#sTrack').children[R.i]; if(b) b.firstChild.style.width=(frac*100)+'%';
+    const kind=PHASES[st.p].kind;
+
+    if(kind==='breathe'){
+      const prog=$('#prog'); if(prog) prog.style.strokeDashoffset=666*(1-frac);
+      const cyc=14, t=(performance.now()/1000)%cyc;
+      const orb=$('#orb'), cue=$('#cue');
+      if(orb&&cue){
+        if(t<4){ orb.style.transform='scale(1.45)'; cue.textContent='Breathe in'; }
+        else if(t<8){ orb.style.transform='scale(1.45)'; cue.textContent='Hold'; }
+        else { orb.style.transform='scale(.85)'; cue.textContent='Breathe out'; }
+      }
+    }
+    if(kind==='guide'){
+      const n=GUIDE_LINES.length, idx=Math.min(n-1,Math.floor(frac*n));
+      document.querySelectorAll('.gline').forEach((el,i)=>el.classList.toggle('on',i===idx));
+    }
+    if(kind==='move'){
+      const n=STRETCHES.length, idx=Math.min(n-1,Math.floor(frac*n));
+      document.querySelectorAll('.stretch').forEach((el,i)=>{
+        el.classList.toggle('on',i===idx);
+        const s=el.querySelector('.h span'); if(s) s.textContent = i===idx?'now' : (i<idx?'done':'');
+      });
+    }
+    if(e>=st.dur){ advance(); }
+  }
+  R.raf=requestAnimationFrame(tick);
+}
+
+function finish(){
+  const before=R.clarityBefore, acc=R.acc, notes=R.notes, s=R.s, key=R.key;
+  R.done=true;
+  Audio2.stop();
+  if(R.raf) cancelAnimationFrame(R.raf);
+  $('#sPhase').textContent='Done';
+  $('#sClock').textContent='0:00';
+  [...$('#sTrack').children].forEach(i=>i.firstChild.style.width='100%');
+  $('#sBody').innerHTML=`
+    <div class="checkin">
+      <div class="big2">And now — how clear is your thinking?</div>
+      <p>Be honest. A small gain is still a real one.</p>
+      <div class="ck-val" id="ckv2">${Math.min(100,before+15)}</div>
+      <p style="margin:4px 0 14px">out of 100</p>
+      <input type="range" id="ck2" min="0" max="100" value="${Math.min(100,before+15)}" aria-label="Clarity after session">
+      <div class="scale" style="color:#5C6D67"><span>Foggy</span><span>Sharp</span></div>
+    </div>`;
+  $('#sFoot').innerHTML=`<button class="s-btn wide" id="done">See my result</button>`;
+  $('#ck2').addEventListener('input',e=>{ $('#ckv2').textContent=e.target.value; });
+  $('#done').onclick=()=>{
+    const after=+$('#ck2').value, gain=Math.max(0, after-before);
+    const now=new Date();
+    S.sessions.push({ key, name:s.name, mins:s.mins, date:now.toISOString().slice(0,10),
+      time:now.toTimeString().slice(0,5), before, after, gain, acc, notes });
+    S.fog=Math.max(0,100-after); save();
+    $('#sBody').innerHTML=`
+      <div class="result">
+        <p style="color:#5C6D67;font-size:13px;margin:0">Clarity gain</p>
+        <div class="delta">+${gain}</div>
+        <p style="color:#42534E;font-size:14px;line-height:1.55;margin:6px auto 0;max-width:30ch">
+          ${gain>=15?'That is a real shift. Go straight to the task you anchored — the window is open now.'
+            :gain>0?'Modest, and that is normal on a heavy day. Same time tomorrow builds the effect.'
+            :'No gain this time. Worth trying the longer reset, with headphones and the audio on.'}</p>
+        <div class="rgrid">
+          <div><b>${before} → ${after}</b><small>clarity before and after</small></div>
+          <div><b>${acc!=null?acc+'%':'—'}</b><small>booster accuracy</small></div>
+          <div><b>${s.mins} min</b><small>${s.name}</small></div>
+          <div><b>${streak()} day${streak()===1?'':'s'}</b><small>current streak</small></div>
+        </div>
+        ${notes.length?`<p style="margin-top:16px;font-size:13px;color:#42534E;text-align:left">You anchored: ${notes.map(n=>`<b>${n.replace(/</g,'&lt;')}</b>`).join(' · ')}</p>`:''}
+      </div>`;
+    $('#sFoot').innerHTML=`<button class="s-btn wide" id="out">Back to MindMint</button>`;
+    $('#out').onclick=()=>{ closeSession(); setTab('progress'); };
+  };
+}
+
+$('#sExit').onclick=()=>{ if(R&&R.steps&&!confirm('End the session? This one will not be logged.')) return; closeSession(); render(); };
+
+/* ---------- boot ---------- */
+render();
+</script>
+</body>
+</html>
